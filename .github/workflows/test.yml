@@ -15,7 +15,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        node_version: [24.x, 22.x, 20.x, 18.x, 16.x ]
+        node_version: [ 26.x ]
         os: [ ubuntu-latest, windows-latest ]
 
     env:
@@ -43,13 +43,14 @@ jobs:
           $HOME/obstor.exe -C $HOME/tmp/obstor-config server $HOME/tmp/data{1...4} &
 
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - run: npm i
+      - run: pnpm install
 
       - name: Run Unit and Functional Tests
         timeout-minutes: 10
@@ -60,4 +61,4 @@ jobs:
           ACCESS_KEY: obstor
           SECRET_KEY: obstor123
           ENABLE_HTTPS: 0
-        run: npm run test
+        run: pnpm test

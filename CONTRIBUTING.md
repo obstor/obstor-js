@@ -9,25 +9,26 @@ $ cd obstor-js
 ### Install npm dependencies
 
 ```bash
-$ npm install
+$ npm add -g pnpm
+$ pnpm install
 ```
 
 ### Format code (with prettier)
 
 ```shell
-$ npm run format
+$ pnpm format
 ```
 
 ### Check Code Style
 
 ```shell
-$ npm run lint
+$ pnpm lint
 ```
 
 ### Tests
 
 ```shell
-$ npm run test
+$ pnpm test
 ```
 
 ###  Developer Guidelines

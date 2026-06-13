@@ -20,9 +20,11 @@ npm install --save obstor
 ```sh
 git clone https://github.com/obstor/obstor-js
 cd obstor-js
-npm install
-npm run build
-npm install -g
+
+npm install -g pnpm
+pnpm install
+pnpm build
+pnpm link --global
 ```
 
 ## Using with TypeScript

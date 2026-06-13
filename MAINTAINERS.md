@@ -40,7 +40,7 @@ Logged in as obstor on https://registry.npmjs.org/.
 
 Build for release
 ```sh
-$ npm run build
+$ pnpm build
 ```
 
 Publish the new release to npm repository.
