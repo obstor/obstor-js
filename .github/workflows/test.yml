@@ -19,28 +19,28 @@ jobs:
         os: [ ubuntu-latest, windows-latest ]
 
     env:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: minio123
-      MINIO_KMS_SECRET_KEY: 'my-minio-key:OSMM+vkKUTCvQs9YL/CVMIMt43HFhkUpqJxTmGl6rYw='
-      MINIO_CI_CD: true
+      OBSTOR_ROOT_USER: obstor
+      OBSTOR_ROOT_PASSWORD: obstor123
+      OBSTOR_KMS_SECRET_KEY: 'my-obstor-key:OSMM+vkKUTCvQs9YL/CVMIMt43HFhkUpqJxTmGl6rYw='
+      OBSTOR_CI_CD: true
       SERVER_ENDPOINT: localhost:9000
 
     steps:
       - name: Start Server
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          wget --quiet -O /tmp/minio https://dl.min.io/server/minio/release/linux-amd64/minio
-          chmod +x /tmp/minio
-          /tmp/minio -C /tmp/minio-config server /tmp/data{1...4} &
+          wget --quiet -O /tmp/obstor https://dl.pgg.net/server/obstor/release/linux-amd64/obstor
+          chmod +x /tmp/obstor
+          /tmp/obstor -C /tmp/obstor-config server /tmp/data{1...4} &
 
-      - run: Invoke-WebRequest -Uri https://dl.minio.io/server/minio/release/windows-amd64/minio.exe -OutFile $HOME/minio.exe
+      - run: Invoke-WebRequest -Uri https://dl.pgg.net/server/obstor/release/windows-amd64/obstor.exe -OutFile $HOME/obstor.exe
         if: ${{ matrix.os == 'windows-latest' }}
 
-      - name: Start MinIO Server
+      - name: Start Obstor Server
         if: ${{ matrix.os == 'windows-latest' }}
         shell: bash
         run: |
-          $HOME/minio.exe -C $HOME/tmp/minio-config server $HOME/tmp/data{1...4} &
+          $HOME/obstor.exe -C $HOME/tmp/obstor-config server $HOME/tmp/data{1...4} &
 
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node_version }}
@@ -55,9 +55,9 @@ jobs:
         timeout-minutes: 10
         env:
           CI: true
-          MINIO_CI_CD: true
+          OBSTOR_CI_CD: true
           MINT_MODE: full
-          ACCESS_KEY: minio
-          SECRET_KEY: minio123
+          ACCESS_KEY: obstor
+          SECRET_KEY: obstor123
           ENABLE_HTTPS: 0
         run: npm run test

@@ -32,7 +32,7 @@ const MAX_RETRIES = 1
 const BASE_DELAY_MS = 100 // Base delay for exponential backoff
 const MAX_DELAY_MS = 60000 // Max delay for exponential backoff
 
-// Retryable error codes for HTTP ( ref: minio-go)
+// Retryable error codes for HTTP ( ref: obstor-go)
 export const retryHttpCodes: Record<string, boolean> = {
   408: true,
   429: true,
@@ -84,7 +84,7 @@ export async function requestWithRetry(
         isRetryable = false
 
         if (attempt > maxRetries) {
-          throw new Error(`Request failed after ${maxRetries} retries: ${err}`)
+          throw new Error(`Request failed after ${maxRetries} retries: ${err}`, { cause: err })
         }
         const delay = getExpBackOffDelay(attempt, baseDelayMs, maximumDelayMs)
         // eslint-disable-next-line no-console

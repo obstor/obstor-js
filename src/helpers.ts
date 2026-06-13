@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 
-import * as querystring from 'query-string'
+import querystring from 'query-string'
 
 import * as errors from './errors.ts'
 import {
@@ -229,8 +229,8 @@ export class CopyDestinationOptions {
       headerOptions['X-Amz-Tagging'] = isObject(userTags)
         ? querystring.stringify(userTags)
         : isString(userTags)
-        ? userTags
-        : ''
+          ? userTags
+          : ''
     }
 
     if (this.Mode) {

@@ -243,8 +243,9 @@ export function isPlainObject(arg: unknown): arg is Record<string, unknown> {
  * check if object is readable stream
  */
 export function isReadableStream(arg: unknown): arg is stream.Readable {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  return isObject(arg) && isFunction((arg as stream.Readable)._read) && stream.isReadable(arg as stream.Readable)
+  return (
+    isObject(arg) && isFunction((arg as stream.Readable)._read) && (stream.isReadable(arg as stream.Readable) ?? false)
+  )
 }
 
 /**
@@ -429,7 +430,7 @@ export function sanitizeETag(etag = ''): string {
 
 export function toMd5(payload: Binary): string {
   // use string from browser and buffer from nodejs
-  // browser support is tested only against minio server
+  // browser support is tested only against obstor server
   return crypto.createHash('md5').update(Buffer.from(payload)).digest().toString('base64')
 }
 

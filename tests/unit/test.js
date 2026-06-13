@@ -33,7 +33,7 @@ import {
 } from '../../src/internal/helper.ts'
 import { joinHostPort } from '../../src/internal/join-host-port.ts'
 import { parseListMultipart, parseListObjects } from '../../src/internal/xml-parser.ts'
-import * as Minio from '../../src/minio.ts'
+import * as Obstor from '../../src/obstor.ts'
 
 const Package = { version: 'development' }
 
@@ -62,7 +62,7 @@ describe('Helpers', () => {
     assert.equal(makeDateLong(date), '20170811T172634Z')
   })
 
-  // Adopted from minio-go sdk
+  // Adopted from obstor-go sdk
   const oneGB = 1024 * 1024 * 1024
   const fiveGB = 5 * oneGB
 
@@ -104,7 +104,7 @@ describe('Helpers', () => {
     })
   })
   it('Even split of Sizes Test cases ', () => {
-    // Adopted from minio-go sdk
+    // Adopted from obstor-go sdk
     const expectedSplitsTestCases = [
       {
         size: 0,
@@ -212,7 +212,7 @@ describe('Helpers', () => {
 describe('CopyConditions', () => {
   let date = 'Fri, 11 Aug 2017 19:34:18 GMT'
 
-  let cc = new Minio.CopyConditions()
+  let cc = new Obstor.CopyConditions()
 
   describe('#setModified', () => {
     it('should take a date argument', () => {
@@ -265,7 +265,7 @@ describe('Client', function () {
       }
     })
   })
-  var client = new Minio.Client({
+  var client = new Obstor.Client({
     endPoint: 'localhost',
     port: 9000,
     accessKey: 'accesskey',
@@ -274,7 +274,7 @@ describe('Client', function () {
   })
   describe('new client', () => {
     it('should work with https', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         accessKey: 'accesskey',
         secretKey: 'secretkey',
@@ -282,7 +282,7 @@ describe('Client', function () {
       assert.equal(client.port, 443)
     })
     it('should override port with http', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         port: 9000,
         accessKey: 'accesskey',
@@ -292,7 +292,7 @@ describe('Client', function () {
       assert.equal(client.port, 9000)
     })
     it('should work with http', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         accessKey: 'accesskey',
         secretKey: 'secretkey',
@@ -301,7 +301,7 @@ describe('Client', function () {
       assert.equal(client.port, 80)
     })
     it('should override port with https', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         port: 9000,
         accessKey: 'accesskey',
@@ -311,7 +311,7 @@ describe('Client', function () {
     })
     it('should fail with url', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           endPoint: 'http://localhost:9000',
           accessKey: 'accesskey',
           secretKey: 'secretkey',
@@ -322,7 +322,7 @@ describe('Client', function () {
     })
     it('should fail with non-alphanumeric', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           endPoint: 'localhost##$@3',
           accessKey: 'accesskey',
           secretKey: 'secretkey',
@@ -333,7 +333,7 @@ describe('Client', function () {
     })
     it('should fail with no url', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           accessKey: 'accesskey',
           secretKey: 'secretkey',
         })
@@ -343,7 +343,7 @@ describe('Client', function () {
     })
     it('should fail with bad port', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           endPoint: 'localhost',
           port: -1,
           accessKey: 'accesskey',
@@ -355,7 +355,7 @@ describe('Client', function () {
     })
     it('should fail when secure param is passed', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           endPoint: 'localhost',
           secure: false,
           port: 9000,
@@ -368,7 +368,7 @@ describe('Client', function () {
     })
     it('should fail when secure param is passed', (done) => {
       try {
-        new Minio.Client({
+        new Obstor.Client({
           endPoint: 'localhost',
           secure: true,
           port: 9000,
@@ -382,7 +382,7 @@ describe('Client', function () {
   })
   describe('Presigned URL', () => {
     describe('presignedUrl', () => {
-      const client = new Minio.Client({
+      const client = new Obstor.Client({
         endPoint: 'localhost',
         port: 9000,
         accessKey: 'accesskey',
@@ -414,7 +414,7 @@ describe('Client', function () {
     describe('presigned-get', () => {
       it('should not generate presigned url with no access key', async () => {
         try {
-          const client = new Minio.Client({
+          const client = new Obstor.Client({
             endPoint: 'localhost',
             port: 9000,
             useSSL: false,
@@ -437,7 +437,7 @@ describe('Client', function () {
     describe('presigned-put', () => {
       it('should not generate presigned url with no access key', async () => {
         try {
-          const client = new Minio.Client({
+          const client = new Obstor.Client({
             endPoint: 'localhost',
             port: 9000,
             useSSL: false,
@@ -450,7 +450,7 @@ describe('Client', function () {
       })
       it('should not generate presigned url with wrong expires param', async () => {
         try {
-          const client = new Minio.Client({
+          const client = new Obstor.Client({
             endPoint: 'localhost',
             port: 9000,
             useSSL: false,
@@ -497,40 +497,40 @@ describe('Client', function () {
   })
   describe('User Agent', () => {
     it('should have a default user agent', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         accessKey: 'accesskey',
         secretKey: 'secretkey',
       })
-      assert.equal(`MinIO (${process.platform}; ${process.arch}) minio-js/${Package.version}`, client.userAgent)
+      assert.equal(`Obstor (${process.platform}; ${process.arch}) obstor-js/${Package.version}`, client.userAgent)
     })
     it('should set user agent', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         accessKey: 'accesskey',
         secretKey: 'secretkey',
       })
       client.setAppInfo('test', '3.2.1')
       assert.equal(
-        `MinIO (${process.platform}; ${process.arch}) minio-js/${Package.version} test/3.2.1`,
+        `Obstor (${process.platform}; ${process.arch}) obstor-js/${Package.version} test/3.2.1`,
         client.userAgent,
       )
     })
     it('should set user agent without comments', () => {
-      var client = new Minio.Client({
+      var client = new Obstor.Client({
         endPoint: 'localhost',
         accessKey: 'accesskey',
         secretKey: 'secretkey',
       })
       client.setAppInfo('test', '3.2.1')
       assert.equal(
-        `MinIO (${process.platform}; ${process.arch}) minio-js/${Package.version} test/3.2.1`,
+        `Obstor (${process.platform}; ${process.arch}) obstor-js/${Package.version} test/3.2.1`,
         client.userAgent,
       )
     })
     it('should not set user agent without name', (done) => {
       try {
-        var client = new Minio.Client({
+        var client = new Obstor.Client({
           endPoint: 'localhost',
           accessKey: 'accesskey',
           secretKey: 'secretkey',
@@ -542,7 +542,7 @@ describe('Client', function () {
     })
     it('should not set user agent with empty name', (done) => {
       try {
-        var client = new Minio.Client({
+        var client = new Obstor.Client({
           endPoint: 'localhost',
           accessKey: 'accesskey',
           secretKey: 'secretkey',
@@ -554,7 +554,7 @@ describe('Client', function () {
     })
     it('should not set user agent without version', (done) => {
       try {
-        var client = new Minio.Client({
+        var client = new Obstor.Client({
           endPoint: 'localhost',
           accessKey: 'accesskey',
           secretKey: 'secretkey',
@@ -566,7 +566,7 @@ describe('Client', function () {
     })
     it('should not set user agent with empty version', (done) => {
       try {
-        var client = new Minio.Client({
+        var client = new Obstor.Client({
           endPoint: 'localhost',
           accessKey: 'accesskey',
           secretKey: 'secretkey',

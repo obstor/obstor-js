@@ -33,7 +33,7 @@ import * as uuid from 'uuid'
 import { AssumeRoleProvider } from '../../src/AssumeRoleProvider.ts'
 import { CopyDestinationOptions, CopySourceOptions, DEFAULT_REGION } from '../../src/helpers.ts'
 import { getVersionId } from '../../src/internal/helper.ts'
-import * as minio from '../../src/minio.ts'
+import * as obstor from '../../src/obstor.ts'
 
 const assert = chai.assert
 
@@ -42,7 +42,7 @@ const isWindowsPlatform = process.platform === 'win32'
 describe('functional tests', function () {
   this.timeout(30 * 60 * 1000)
   var clientConfigParams = {}
-  var region_conf_env = process.env['MINIO_REGION']
+  var region_conf_env = process.env['OBSTOR_REGION']
 
   if (process.env['SERVER_ENDPOINT']) {
     var res = process.env['SERVER_ENDPOINT'].split(':')
@@ -71,8 +71,8 @@ describe('functional tests', function () {
     }
     clientConfigParams.useSSL = enable_https_env == '1'
   } else {
-    // If credentials aren't given, default to play.min.io.
-    clientConfigParams.endPoint = 'play.min.io'
+    // If credentials aren't given, default to demo.obstor.net.
+    clientConfigParams.endPoint = 'demo.obstor.net'
     clientConfigParams.port = 9000
     clientConfigParams.accessKey = 'Q3AM3UQ867SPQQA43P2F'
     clientConfigParams.secretKey = 'zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG'
@@ -89,10 +89,10 @@ describe('functional tests', function () {
   // a directory with files to read from, i.e. /mint/data.
   var dataDir = process.env['MINT_DATA_DIR']
 
-  var client = new minio.Client(clientConfigParams)
+  var client = new obstor.Client(clientConfigParams)
   var usEastConfig = clientConfigParams
   usEastConfig.region = server_region
-  var clientUsEastRegion = new minio.Client(usEastConfig)
+  var clientUsEastRegion = new obstor.Client(usEastConfig)
 
   var traceStream
   // FUNCTIONAL_TEST_TRACE env variable contains the path to which trace
@@ -109,7 +109,7 @@ describe('functional tests', function () {
     client.traceOn(traceStream)
   }
 
-  var bucketName = 'minio-js-test-' + uuid.v4()
+  var bucketName = 'obstor-js-test-' + uuid.v4()
   var objectName = uuid.v4()
 
   var _1byteObjectName = 'datafile-1-b'
@@ -764,7 +764,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:ExceptIncorrectEtag_`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setMatchETagExcept('TestEtag')
         client.copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds, (e) => {
           if (e) {
@@ -778,7 +778,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:ExceptCorrectEtag_`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setMatchETagExcept(etag)
         client
           .copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds)
@@ -792,7 +792,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:MatchCorrectEtag_`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setMatchETag(etag)
         client.copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds, (e) => {
           if (e) {
@@ -806,7 +806,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:MatchIncorrectEtag_`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setMatchETag('TestETag')
         client
           .copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds)
@@ -820,7 +820,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:Unmodified since ${modifiedDate}`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setUnmodified(new Date(modifiedDate))
         client.copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds, (e) => {
           if (e) {
@@ -834,7 +834,7 @@ describe('functional tests', function () {
     step(
       `copyObject(bucketName, objectName, srcObject, conditions, cb)_bucketName:${bucketName}, objectName:${_100kbObjectNameCopy}, srcObject:/${bucketName}/${_100kbObjectName}, conditions:Unmodified since 2010-03-26T12:00:00Z_`,
       (done) => {
-        var conds = new minio.CopyConditions()
+        var conds = new obstor.CopyConditions()
         conds.setUnmodified(new Date('2010-03-26T12:00:00Z'))
         client
           .copyObject(bucketName, _100kbObjectNameCopy, '/' + bucketName + '/' + _100kbObjectName, conds)
@@ -880,8 +880,8 @@ describe('functional tests', function () {
     step(
       `listIncompleteUploads(bucketName, prefix, recursive)_bucketName:${bucketName}, prefix:${_65mbObjectName}, recursive: true_`,
       function (done) {
-        // MinIO's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
-        // See: https://github.com/minio/minio/commit/75c43bfb6c4a2ace
+        // Obstor's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
+        // See: https://github.com/obstor/obstor/commit/75c43bfb6c4a2ace
         let hostSkipList = ['s3.amazonaws.com']
         if (!hostSkipList.includes(client.host)) {
           this.skip()
@@ -907,8 +907,8 @@ describe('functional tests', function () {
     step(
       `listIncompleteUploads(bucketName, prefix, recursive)_bucketName:${bucketName}, recursive: true_`,
       function (done) {
-        // MinIO's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
-        // See: https://github.com/minio/minio/commit/75c43bfb6c4a2ace
+        // Obstor's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
+        // See: https://github.com/obstor/obstor/commit/75c43bfb6c4a2ace
         let hostSkipList = ['s3.amazonaws.com']
         if (!hostSkipList.includes(client.host)) {
           this.skip()
@@ -1036,7 +1036,7 @@ describe('functional tests', function () {
       (done) => {
         var bufPart = Buffer.alloc(_100kb.length)
         _5mb.copy(bufPart, 0, 0, _100kb.length)
-        var tmpFile = `${tmpDir}/${_5mbObjectName}.${etag}.part.minio`
+        var tmpFile = `${tmpDir}/${_5mbObjectName}.${etag}.part.obstor`
         // create a partial file
         fs.writeFileSync(tmpFile, bufPart)
         client
@@ -1667,7 +1667,7 @@ describe('functional tests', function () {
   })
 
   describe('listObjects', function () {
-    var listObjectPrefix = 'miniojsPrefix'
+    var listObjectPrefix = 'obstorjsPrefix'
     var listObjectsNum = 10
     var objArray = []
     var listArray = []
@@ -1688,7 +1688,7 @@ describe('functional tests', function () {
     )
 
     step(
-      `listObjects(bucketName, prefix, recursive)_bucketName:${bucketName}, prefix: miniojsprefix, recursive:true_`,
+      `listObjects(bucketName, prefix, recursive)_bucketName:${bucketName}, prefix: obstorjsprefix, recursive:true_`,
       (done) => {
         client
           .listObjects(bucketName, listObjectPrefix, true)
@@ -1782,7 +1782,7 @@ describe('functional tests', function () {
   })
 
   describe('removeObjects', function () {
-    var listObjectPrefix = 'miniojsPrefix'
+    var listObjectPrefix = 'obstorjsPrefix'
     var listObjectsNum = 10
     var objArray = []
     var objectsList = []
@@ -1861,7 +1861,7 @@ describe('functional tests', function () {
   describe('bucket notifications', () => {
     describe('#listenBucketNotification', () => {
       before(function () {
-        // listenBucketNotification only works on MinIO, so skip if
+        // listenBucketNotification only works on Obstor, so skip if
         // the host is Amazon.
         let hostSkipList = ['s3.amazonaws.com']
         if (hostSkipList.includes(client.host)) {
@@ -1931,7 +1931,7 @@ describe('functional tests', function () {
       )
 
       // This test is very similar to that above, except it does not include
-      // Minio.ObjectCreatedAll in the config. Thus, no events should be emitted.
+      // Obstor.ObjectCreatedAll in the config. Thus, no events should be emitted.
       step(
         `listenBucketNotification(bucketName, prefix, suffix, events)_bucketName:${bucketName}, events:s3:ObjectRemoved:*`,
         (done) => {
@@ -1962,7 +1962,7 @@ describe('functional tests', function () {
 
   describe('Bucket Versioning API', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const versionedBucketName = 'minio-js-test-version-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-version-' + uuid.v4()
     before(() => client.makeBucket(versionedBucketName, ''))
     after(() => client.removeBucket(versionedBucketName))
 
@@ -2018,7 +2018,7 @@ describe('functional tests', function () {
 
   describe('Versioning tests on a buckets', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const versionedBucketName = 'minio-js-test-version-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-version-' + uuid.v4()
     const versioned_100kbObjectName = 'datafile-100-kB'
     const versioned_100kb_Object = dataDir
       ? fs.readFileSync(dataDir + '/' + versioned_100kbObjectName)
@@ -2093,7 +2093,7 @@ describe('functional tests', function () {
 
   describe('Versioning tests on a buckets: getObject, fGetObject, getPartialObject, putObject, removeObject with versionId support', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const versionedBucketName = 'minio-js-test-version-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-version-' + uuid.v4()
     const versioned_100kbObjectName = 'datafile-100-kB'
     const versioned_100kb_Object = dataDir
       ? fs.readFileSync(dataDir + '/' + versioned_100kbObjectName)
@@ -2236,7 +2236,7 @@ describe('functional tests', function () {
   })
 
   describe('Versioning Supported listObjects', function () {
-    const versionedBucketName = 'minio-js-test-version-list' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-version-list' + uuid.v4()
     const prefixName = 'Prefix1'
     const versionedObjectName = 'datafile-100-kB'
     const objVersionIdCounter = [1, 2, 3, 4, 5] // This should track adding 5 versions of the same object.
@@ -2357,7 +2357,7 @@ describe('functional tests', function () {
 
   describe('Versioning tests on a bucket for Deletion of Multiple versions', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const versionedBucketName = 'minio-js-test-version-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-version-' + uuid.v4()
     const versioned_100kbObjectName = 'datafile-100-kB'
     const versioned_100kb_Object = dataDir
       ? fs.readFileSync(dataDir + '/' + versioned_100kbObjectName)
@@ -2461,7 +2461,7 @@ describe('functional tests', function () {
 
   describe('Bucket Tags API', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const tagsBucketName = 'minio-js-test-tags-' + uuid.v4()
+    const tagsBucketName = 'obstor-js-test-tags-' + uuid.v4()
     before(() => client.makeBucket(tagsBucketName, ''))
     after(() => client.removeBucket(tagsBucketName))
 
@@ -2511,7 +2511,7 @@ describe('functional tests', function () {
 
   describe('Object Tags API', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const tagsBucketName = 'minio-js-test-tags-' + uuid.v4()
+    const tagsBucketName = 'obstor-js-test-tags-' + uuid.v4()
     before(() => client.makeBucket(tagsBucketName, ''))
     after(() => client.removeBucket(tagsBucketName))
 
@@ -2646,7 +2646,7 @@ describe('functional tests', function () {
 
   describe('Object Tags API with Versioning support', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const tagsVersionedBucketName = 'minio-js-test-tags-version-' + uuid.v4()
+    const tagsVersionedBucketName = 'obstor-js-test-tags-version-' + uuid.v4()
     before(() => client.makeBucket(tagsVersionedBucketName, ''))
     after(() => client.removeBucket(tagsVersionedBucketName))
 
@@ -2757,7 +2757,7 @@ describe('functional tests', function () {
   })
 
   describe('Bucket Lifecycle API', () => {
-    const bucketName = 'minio-js-test-lifecycle-' + uuid.v4()
+    const bucketName = 'obstor-js-test-lifecycle-' + uuid.v4()
     before(() => client.makeBucket(bucketName, ''))
     after(() => client.removeBucket(bucketName))
 
@@ -2825,7 +2825,7 @@ describe('functional tests', function () {
      * 6. Cleanup bucket.
      */
 
-    const versionedBucketName = 'minio-js-test-ver-presign-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-test-ver-presign-' + uuid.v4()
     const versionedPresignObjName = 'datafile-1-b'
     const _100_byte = Buffer.alloc(100 * 1024, 0)
     const _200_byte = Buffer.alloc(200 * 1024, 0)
@@ -3041,7 +3041,7 @@ describe('functional tests', function () {
     // Gateway mode does not support this header.
 
     describe('Object Lock support makeBucket API Tests', function () {
-      const lockEnabledBucketName = 'minio-js-test-lock-mb-' + uuid.v4()
+      const lockEnabledBucketName = 'obstor-js-test-lock-mb-' + uuid.v4()
       let isFeatureSupported = false
       step(`Check if bucket with object lock can be created:_bucketName:${lockEnabledBucketName}`, (done) => {
         client.makeBucket(lockEnabledBucketName, { ObjectLocking: true }, (err) => {
@@ -3090,7 +3090,7 @@ describe('functional tests', function () {
     })
 
     describe('Object Lock support Set/Get API Tests', function () {
-      const lockConfigBucketName = 'minio-js-test-lock-conf-' + uuid.v4()
+      const lockConfigBucketName = 'obstor-js-test-lock-conf-' + uuid.v4()
       let isFeatureSupported = false
       step(`Check if bucket with object lock can be created:_bucketName:${lockConfigBucketName}`, (done) => {
         client.makeBucket(lockConfigBucketName, { ObjectLocking: true }, (err) => {
@@ -3193,7 +3193,7 @@ describe('functional tests', function () {
     // Gateway mode does not support this header.
 
     describe('Object retention get/set API Test', function () {
-      const objRetentionBucket = 'minio-js-test-retention-' + uuid.v4()
+      const objRetentionBucket = 'obstor-js-test-retention-' + uuid.v4()
       const retentionObjName = 'RetentionObject'
       let isFeatureSupported = false
       let versionId = null
@@ -3311,7 +3311,7 @@ describe('functional tests', function () {
   describe('Bucket Encryption Related APIs', () => {
     // Isolate the bucket/object for easy debugging and tracking.
     // this is not supported in gateway mode.
-    const encBucketName = 'minio-js-test-bucket-enc-' + uuid.v4()
+    const encBucketName = 'obstor-js-test-bucket-enc-' + uuid.v4()
     before(() => client.makeBucket(encBucketName, ''))
     after(() => client.removeBucket(encBucketName))
 
@@ -3453,9 +3453,9 @@ describe('functional tests', function () {
 
   describe('Bucket Replication API Tests', () => {
     // TODO - As of now, there is no api to get arn programmatically to setup replication through APIs and verify.
-    // Please refer to minio server documentation and mc cli.
-    // https://min.io/docs/minio/linux/administration/bucket-replication.html
-    // https://min.io/docs/minio/linux/reference/minio-mc/mc-replicate-add.html
+    // Please refer to obstor server documentation and mc cli.
+    // https://obstor.net/docs/linux/administration/bucket-replication.html
+    // https://obstor.net/docs/linux/reference/obstor-mc/mc-replicate-add.html
   })
 
   describe('Object Legal hold API Tests', () => {
@@ -3463,7 +3463,7 @@ describe('functional tests', function () {
     // Gateway mode does not support this header.
     let versionId = null
     describe('Object Legal hold get/set API Test', function () {
-      const objLegalHoldBucketName = 'minio-js-test-legalhold-' + uuid.v4()
+      const objLegalHoldBucketName = 'obstor-js-test-legalhold-' + uuid.v4()
       const objLegalHoldObjName = 'LegalHoldObject'
       let isFeatureSupported = false
 
@@ -3615,7 +3615,7 @@ describe('functional tests', function () {
 
   describe('Object Name special characters test without Prefix', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const bucketNameForSpCharObjects = 'minio-js-test-obj-spwpre-' + uuid.v4()
+    const bucketNameForSpCharObjects = 'obstor-js-test-obj-spwpre-' + uuid.v4()
     before(() => client.makeBucket(bucketNameForSpCharObjects, ''))
     after(() => client.removeBucket(bucketNameForSpCharObjects))
 
@@ -3743,7 +3743,7 @@ describe('functional tests', function () {
     })
   })
   describe('listObjectsV2WithMetadata with tags and metadata', function () {
-    const bucketName = 'minio-js-test-tags-' + uuid.v4()
+    const bucketName = 'obstor-js-test-tags-' + uuid.v4()
     const fdObjectName = 'datafile-100-kB'
     const fdObject = dataDir ? fs.readFileSync(dataDir + '/' + fdObjectName) : Buffer.alloc(100 * 1024, 0)
     const objectName = 'objectwithtags'
@@ -3751,8 +3751,8 @@ describe('functional tests', function () {
     const metadata = { 'X-Amz-Meta-Test': 'test-value' }
 
     before(() => {
-      return client.makeBucket(bucketName, '').then((res) => {
-        return client.putObject(bucketName, objectName, fdObject, fdObject.length, metadata).then((res) => {
+      return client.makeBucket(bucketName, '').then(() => {
+        return client.putObject(bucketName, objectName, fdObject, fdObject.length, metadata).then(() => {
           return client.setObjectTagging(bucketName, objectName, tags)
         })
       })
@@ -3803,7 +3803,7 @@ describe('functional tests', function () {
   })
   describe('Object Name special characters test with a Prefix', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const bucketNameForSpCharObjects = 'minio-js-test-obj-spnpre-' + uuid.v4()
+    const bucketNameForSpCharObjects = 'obstor-js-test-obj-spnpre-' + uuid.v4()
     before(() => client.makeBucket(bucketNameForSpCharObjects, ''))
     after(() => client.removeBucket(bucketNameForSpCharObjects))
 
@@ -3944,7 +3944,7 @@ describe('functional tests', function () {
 
   describe('Assume Role Tests', () => {
     // Run only in local environment.
-    const bucketName = 'minio-js-test-assume-role' + uuid.v4()
+    const bucketName = 'obstor-js-test-assume-role' + uuid.v4()
     before(() => client.makeBucket(bucketName, ''))
     after(() => client.removeBucket(bucketName))
 
@@ -3965,7 +3965,7 @@ describe('functional tests', function () {
 
         const aRoleConf = Object.assign({}, clientConfigParams, { credentialsProvider: assumeRoleProvider })
 
-        const assumeRoleClient = new minio.Client(aRoleConf)
+        const assumeRoleClient = new obstor.Client(aRoleConf)
         assumeRoleClient.region = server_region
 
         describe('Put an Object', function () {
@@ -3998,7 +3998,7 @@ describe('functional tests', function () {
   })
 
   describe('Put Object Response test with multipart on an Un versioned bucket:', () => {
-    const bucketToTestMultipart = 'minio-js-test-put-multiuv-' + uuid.v4()
+    const bucketToTestMultipart = 'obstor-js-test-put-multiuv-' + uuid.v4()
 
     before(() => client.makeBucket(bucketToTestMultipart, ''))
     after(() => client.removeBucket(bucketToTestMultipart))
@@ -4071,7 +4071,7 @@ describe('functional tests', function () {
   })
 
   describe('Put Object Response test with multipart on Versioned bucket:', () => {
-    const bucketToTestMultipart = 'minio-js-test-put-multiv-' + uuid.v4()
+    const bucketToTestMultipart = 'obstor-js-test-put-multiv-' + uuid.v4()
     let isVersioningSupported = false
     let versionedObjectRes = null
     let versionedMultiPartObjectRes = null
@@ -4189,7 +4189,7 @@ describe('functional tests', function () {
      */
 
     const _100mbFileToBeSplitAndComposed = Buffer.alloc(100 * 1024 * 1024, 0)
-    const composeObjectTestBucket = 'minio-js-test-compose-obj-' + uuid.v4()
+    const composeObjectTestBucket = 'obstor-js-test-compose-obj-' + uuid.v4()
     before(() => client.makeBucket(composeObjectTestBucket, ''))
     after(() => client.removeBucket(composeObjectTestBucket))
 
@@ -4335,7 +4335,7 @@ describe('functional tests', function () {
 
   describe('Special Characters test on a prefix and an object', () => {
     // Isolate the bucket/object for easy debugging and tracking.
-    const bucketNameForSpCharObjects = 'minio-js-test-obj-sppre' + uuid.v4()
+    const bucketNameForSpCharObjects = 'obstor-js-test-obj-sppre' + uuid.v4()
     before(() => client.makeBucket(bucketNameForSpCharObjects, ''))
     after(() => client.removeBucket(bucketNameForSpCharObjects))
 
@@ -4466,7 +4466,7 @@ describe('functional tests', function () {
     const specialCharPrefix = 'SpecialMenùäöüexPrefix/'
     const objectNameSpecialChars = 'äöüex.pdf'
     const spObjWithPrefix = `${specialCharPrefix}${objectNameSpecialChars}`
-    const spBucketName = 'minio-js-test-lin-sppre' + uuid.v4()
+    const spBucketName = 'obstor-js-test-lin-sppre' + uuid.v4()
 
     before(() => client.makeBucket(spBucketName, ''))
     after(() => client.removeBucket(spBucketName))
@@ -4479,7 +4479,7 @@ describe('functional tests', function () {
     step(
       `listIncompleteUploads(bucketName, prefix, recursive)_bucketName:${spBucketName}, prefix:${spObjWithPrefix}, recursive: true_`,
       function (done) {
-        // MinIO's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
+        // Obstor's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
         let hostSkipList = ['s3.amazonaws.com']
         if (!hostSkipList.includes(client.host)) {
           done()
@@ -4507,7 +4507,7 @@ describe('functional tests', function () {
     step(
       `listIncompleteUploads(bucketName, prefix, recursive)_bucketName:${spBucketName}, recursive: true_`,
       function (done) {
-        // MinIO's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
+        // Obstor's ListIncompleteUploads returns an empty list, so skip this on non-AWS.
         let hostSkipList = ['s3.amazonaws.com']
         if (!hostSkipList.includes(client.host)) {
           done()
@@ -4540,7 +4540,7 @@ describe('functional tests', function () {
     )
   })
   describe('Select Object content API Test', function () {
-    const selObjContentBucket = 'minio-js-test-sel-object-' + uuid.v4()
+    const selObjContentBucket = 'obstor-js-test-sel-object-' + uuid.v4()
     const selObject = 'SelectObjectContent'
     // Isolate the bucket/object for easy debugging and tracking.
     before(() => client.makeBucket(selObjContentBucket, ''))
@@ -4616,7 +4616,7 @@ describe('functional tests', function () {
 
   describe('Force Deletion of objects with versions', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const fdWithVerBucket = 'minio-js-fd-version-' + uuid.v4()
+    const fdWithVerBucket = 'obstor-js-fd-version-' + uuid.v4()
     const fdObjectName = 'datafile-100-kB'
     const fdObject = dataDir ? fs.readFileSync(dataDir + '/' + fdObjectName) : Buffer.alloc(100 * 1024, 0)
 
@@ -4709,7 +4709,7 @@ describe('functional tests', function () {
 
   describe('Force Deletion of prefix with versions', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const fdPrefixBucketName = 'minio-js-fd-version-' + uuid.v4()
+    const fdPrefixBucketName = 'obstor-js-fd-version-' + uuid.v4()
     const fdPrefixObjName = 'my-prefix/datafile-100-kB'
     const fdPrefixObject = dataDir ? fs.readFileSync(dataDir + '/datafile-100-kB') : Buffer.alloc(100 * 1024, 0)
 
@@ -4802,7 +4802,7 @@ describe('functional tests', function () {
 
   describe('Force Deletion of objects without versions', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const versionedBucketName = 'minio-js-fd-nv-' + uuid.v4()
+    const versionedBucketName = 'obstor-js-fd-nv-' + uuid.v4()
     const versioned_100kbObjectName = 'datafile-100-kB'
     const versioned_100kb_Object = dataDir
       ? fs.readFileSync(dataDir + '/' + versioned_100kbObjectName)
@@ -4854,7 +4854,7 @@ describe('functional tests', function () {
 
   describe('Force Deletion of prefix', function () {
     // Isolate the bucket/object for easy debugging and tracking.
-    const fdPrefixBucket = 'minio-js-fd-nv-' + uuid.v4()
+    const fdPrefixBucket = 'obstor-js-fd-nv-' + uuid.v4()
     const fdObjectName = 'my-prefix/datafile-100-kB'
     const fdObject = dataDir ? fs.readFileSync(dataDir + '/datafile-100-kB') : Buffer.alloc(100 * 1024, 0)
 

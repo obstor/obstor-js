@@ -83,7 +83,7 @@ export class Extensions {
     delimiter: string,
     startAfter: string,
   ): AsyncIterable<BucketItemWithMetadata> {
-    let ended = false
+    let ended: boolean
     let continuationToken = ''
     do {
       const result = await this.listObjectsV2WithMetadataQuery(

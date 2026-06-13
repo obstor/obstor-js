@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-// Note that `listenBucketNotification` is only available for MinIO, and not
+// Note that `listenBucketNotification` is only available for Obstor, and not
 // Amazon.
 
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: '...',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
@@ -35,7 +35,7 @@ const poller = s3Client.listenBucketNotification('bucket1', 'photos/', '.jpg', [
 //   awsRegion: 'us-east-1',
 //   eventTime: '2016-08-23T18:26:07.214Z',
 //   eventName: 's3:ObjectCreated:Put',
-//   userIdentity: { principalId: 'minio' },
+//   userIdentity: { principalId: 'obstor' },
 //   requestParameters: { sourceIPAddress: '...' },
 //   responseElements: {},
 //   s3:

@@ -1,14 +1,14 @@
-# JavaScript Client API Reference [![Slack](https://slack.min.io/slack?type=svg)](https://slack.min.io)
+# JavaScript Client API Reference
 
-## Initialize MinIO Client object.
+## Initialize Obstor Client object.
 
-## MinIO
+## Obstor
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const minioClient = new Minio.Client({
-  endPoint: 'play.min.io',
+const obstorClient = new Obstor.Client({
+  endPoint: 'demo.obstor.net',
   port: 9000,
   useSSL: true,
   accessKey: 'Q3AM3UQ867SPQQA43P2F',
@@ -19,9 +19,9 @@ const minioClient = new Minio.Client({
 ## AWS S3
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
@@ -56,14 +56,14 @@ const s3Client = new Minio.Client({
 
 ## 1. Constructor
 
-<a name="MinioClient_endpoint"></a>
+<a name="ObstorClient_endpoint"></a>
 
-### new Minio.Client ({endPoint, port, useSSL, accessKey, secretKey, region, transport, sessionToken, partSize})
+### new Obstor.Client ({endPoint, port, useSSL, accessKey, secretKey, region, transport, sessionToken, partSize})
 
-|                                                                                                                |
-| -------------------------------------------------------------------------------------------------------------- |
-| `new Minio.Client ({endPoint, port, useSSL, accessKey, secretKey, region, transport, sessionToken, partSize})` |
-| Initializes a new client object.                                                                               |
+|                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------- |
+| `new Obstor.Client ({endPoint, port, useSSL, accessKey, secretKey, region, transport, sessionToken, partSize})` |
+| Initializes a new client object.                                                                                |
 
 **Parameters**
 
@@ -83,13 +83,13 @@ const s3Client = new Minio.Client({
 
 **Example**
 
-## Create client for MinIO
+## Create client for Obstor
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const minioClient = new Minio.Client({
-  endPoint: 'play.min.io',
+const obstorClient = new Obstor.Client({
+  endPoint: 'demo.obstor.net',
   port: 9000,
   useSSL: true,
   accessKey: 'Q3AM3UQ867SPQQA43P2F',
@@ -100,9 +100,9 @@ const minioClient = new Minio.Client({
 ## Create client for AWS S3
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
@@ -112,9 +112,9 @@ const s3Client = new Minio.Client({
 ## Create client with temporary credentials
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-TEMP-ACCESSKEYID',
   secretKey: 'YOUR-TEMP-SECRETACCESSKEY',
@@ -125,12 +125,12 @@ const s3Client = new Minio.Client({
 ## Create client with custom HTTPS Agent
 
 ```js
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 import * as fs from 'fs'
 import * as https from 'https'
 
-const s3Client = new Minio.Client({
-  endPoint: 'play.min.io',
+const s3Client = new Obstor.Client({
+  endPoint: 'demo.obstor.net',
   port: 9000,
   useSSL: true,
   accessKey: 'Q3AM3UQ867SPQQA43P2F',
@@ -166,7 +166,7 @@ Creates a new bucket.
 **Example**
 
 ```js
-await minioClient.makeBucket('mybucket', 'us-east-1')
+await obstorClient.makeBucket('mybucket', 'us-east-1')
 console.log('Bucket created successfully in "us-east-1".')
 ```
 
@@ -174,7 +174,7 @@ console.log('Bucket created successfully in "us-east-1".')
 Create a bucket with object locking enabled.
 
 ```js
-minioClient.makeBucket('mybucket', 'us-east-1', { ObjectLocking: true }, function (err) {
+obstorClient.makeBucket('mybucket', 'us-east-1', { ObjectLocking: true }, function (err) {
   if (err) return console.log('Error creating bucket with object lock.', err)
   console.log('Bucket created successfully in "us-east-1" and enabled object lock')
 })
@@ -203,7 +203,7 @@ Please refer to: [list-buckets.mjs](..%2Fexamples%2Flist-buckets.mjs)
 
 ```js
 try {
-  const buckets = await minioClient.listBuckets()
+  const buckets = await obstorClient.listBuckets()
   console.log('Success', buckets)
 } catch (err) {
   console.log(err.message)
@@ -225,7 +225,7 @@ Checks if a bucket exists.
 **Example**
 
 ```js
-const exists = await minioClient.bucketExists('mybucket')
+const exists = await obstorClient.bucketExists('mybucket')
 if (exists) {
   return console.log('Bucket exists.')
 }
@@ -248,7 +248,7 @@ Removes a bucket.
 
 ```js
 try {
-  await minioClient.removeBucket('mybucket')
+  await obstorClient.removeBucket('mybucket')
   console.log('Bucket removed successfully.')
 } catch (err) {
   console.log('unable to remove bucket.')
@@ -292,7 +292,7 @@ The object is of the format:
 
 ```js
 const data = []
-const stream = minioClient.listObjects('mybucket', '', true)
+const stream = obstorClient.listObjects('mybucket', '', true)
 stream.on('data', function (obj) {
   data.push(obj)
 })
@@ -309,7 +309,7 @@ To get Object versions
 
 ```js
 const data = []
-const stream = minioClient.listObjects('mybucket', '', true, { IncludeVersion: true })
+const stream = obstorClient.listObjects('mybucket', '', true, { IncludeVersion: true })
 stream.on('data', function (obj) {
   data.push(obj)
 })
@@ -355,7 +355,7 @@ The object is of the format:
 **Example**
 
 ```js
-const stream = minioClient.listObjectsV2('mybucket', '', true, '')
+const stream = obstorClient.listObjectsV2('mybucket', '', true, '')
 stream.on('data', function (obj) {
   console.log(obj)
 })
@@ -399,7 +399,7 @@ The object is of the format:
 **Example**
 
 ```js
-const stream = minioClient.extensions.listObjectsV2WithMetadata('mybucket', '', true, '')
+const stream = obstorClient.extensions.listObjectsV2WithMetadata('mybucket', '', true, '')
 stream.on('data', function (obj) {
   console.log(obj)
 })
@@ -437,7 +437,7 @@ Lists partially uploaded objects in a bucket.
 **Example**
 
 ```js
-const Stream = minioClient.listIncompleteUploads('mybucket', '', true)
+const Stream = obstorClient.listIncompleteUploads('mybucket', '', true)
 Stream.on('data', function (obj) {
   console.log(obj)
 })
@@ -464,7 +464,7 @@ Get Versioning state of a Bucket
 **Example**
 
 ```js
-const versionInfo = await minioClient.getBucketVersioning('bucketname')
+const versionInfo = await obstorClient.getBucketVersioning('bucketname')
 console.log('Success ', versionInfo)
 ```
 
@@ -485,7 +485,7 @@ Set Versioning state on a Bucket
 
 ```js
 const versioningConfig = { Status: 'Enabled' }
-await minioClient.setBucketVersioning('bucketname', versioningConfig)
+await obstorClient.setBucketVersioning('bucketname', versioningConfig)
 ```
 
 <a name="setBucketReplication"></a>
@@ -504,7 +504,7 @@ Set replication config on a Bucket
 **Example**
 
 ```js
-const arnFromMcCli = 'arn:minio:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
+const arnFromMcCli = 'arn:obstor:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
 const replicationConfig = {
   role: arnFromMcCli,
   rules: [
@@ -554,7 +554,7 @@ Get replication config of a Bucket
 **Example**
 
 ```js
-const replicatinConfig = await minioClient.getBucketReplication('source-bucket')
+const replicatinConfig = await obstorClient.getBucketReplication('source-bucket')
 console.log(replicatinConfig)
 ```
 
@@ -573,7 +573,7 @@ Remove replication config of a Bucket
 **Example**
 
 ```js
-await minioClient.removeBucketReplication('source-bucket')
+await obstorClient.removeBucketReplication('source-bucket')
 ```
 
 <a name="setBucketTagging"></a>
@@ -592,7 +592,7 @@ Set Tags on a Bucket
 **Example**
 
 ```js
-await minioClient.setBucketTagging('bucketname', tags)
+await obstorClient.setBucketTagging('bucketname', tags)
 ```
 
 <a name="removeBucketTagging"></a>
@@ -610,7 +610,7 @@ Remove Tags on a Bucket
 **Example**
 
 ```js
-await minioClient.removeBucketTagging('bucketname')
+await obstorClient.removeBucketTagging('bucketname')
 ```
 
 <a name="getBucketTagging"></a>
@@ -628,7 +628,7 @@ Gets Tags on a Bucket
 **Example**
 
 ```js
-const tagList = await minioClient.getBucketTagging('bucketname')
+const tagList = await obstorClient.getBucketTagging('bucketname')
 console.log(tagList)
 ```
 
@@ -663,7 +663,7 @@ const lifecycleConfig = {
   ],
 }
 
-await minioClient.setBucketLifecycle('bucketname', lifecycleConfig)
+await obstorClient.setBucketLifecycle('bucketname', lifecycleConfig)
 ```
 
 <a name="getBucketLifecycle"></a>
@@ -681,7 +681,7 @@ Get Lifecycle Configuration of a Bucket
 **Example**
 
 ```js
-await minioClient.getBucketLifecycle('bucketname')
+await obstorClient.getBucketLifecycle('bucketname')
 ```
 
 <a name="removeBucketLifecycle"></a>
@@ -699,7 +699,7 @@ Remove Lifecycle Configuration of a Bucket
 **Example**
 
 ```js
-await minioClient.removeBucketLifecycle('bucketname')
+await obstorClient.removeBucketLifecycle('bucketname')
 ```
 
 <a name="setObjectLockConfig"></a>
@@ -718,7 +718,7 @@ Set Object lock config on a Bucket
 **Example 1**
 
 ```js
-await minioClient.setObjectLockConfig('my-bucketname', { mode: 'COMPLIANCE', unit: 'Days', validity: 10 })
+await obstorClient.setObjectLockConfig('my-bucketname', { mode: 'COMPLIANCE', unit: 'Days', validity: 10 })
 ```
 
 **Example 2**
@@ -744,7 +744,7 @@ Get Lock config on a Bucket
 Get object lock configuration on a Bucket
 
 ```js
-await minioClient.getObjectLockConfig('my-bucketname')
+await obstorClient.getObjectLockConfig('my-bucketname')
 ```
 
 <a name="setBucketEncryption"></a>
@@ -840,7 +840,7 @@ Downloads an object as a stream.
 
 ```js
 let size = 0
-const dataStream = await minioClient.getObject('mybucket', 'photo.jpg')
+const dataStream = await obstorClient.getObject('mybucket', 'photo.jpg')
 dataStream.on('data', function (chunk) {
   size += chunk.length
 })
@@ -858,7 +858,7 @@ Get a specific object version.
 
 ```js
 let size = 0
-const dataStream = await minioClient.getObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
+const dataStream = await obstorClient.getObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
 dataStream.on('data', function (chunk) {
   size += chunk.length
 })
@@ -876,7 +876,7 @@ Get a Server Side Encrypted object.
 
 ```js
 let size = 0
-const dataStream = await minioClient.getObject('mybucket', 'photo.jpg', {
+const dataStream = await obstorClient.getObject('mybucket', 'photo.jpg', {
   SSECustomerAlgorithm: 'AES256',
   SSECustomerKey: 'YOUR_KEY',
   SSECustomerKeyMD5: 'YOUR_MD5',
@@ -920,7 +920,7 @@ Downloads the specified range bytes of an object as a stream.
 ```js
 let size = 0
 // reads 30 bytes from the offset 10.
-const dataStream = await minioClient.getPartialObject('mybucket', 'photo.jpg', 10, 30)
+const dataStream = await obstorClient.getPartialObject('mybucket', 'photo.jpg', 10, 30)
 dataStream.on('data', function (chunk) {
   size += chunk.length
 })
@@ -938,7 +938,7 @@ To get a specific version of an object
 ```js
 const versionedObjSize = 0
 // reads 30 bytes from the offset 10.
-const dataStream = await minioClient.getPartialObject('mybucket', 'photo.jpg', 10, 30, { versionId: 'my-versionId' })
+const dataStream = await obstorClient.getPartialObject('mybucket', 'photo.jpg', 10, 30, { versionId: 'my-versionId' })
 dataStream.on('data', function (chunk) {
   versionedObjSize += chunk.length
 })
@@ -956,7 +956,7 @@ To get a Server Side Encrypted object.
 ```js
 const versionedObjSize = 0
 // reads 30 bytes from the offset 10.
-const dataStream = await minioClient.getPartialObject('mybucket', 'photo.jpg', 10, 30, {
+const dataStream = await obstorClient.getPartialObject('mybucket', 'photo.jpg', 10, 30, {
   SSECustomerAlgorithm: 'AES256',
   SSECustomerKey: 'YOUR_KEY',
   SSECustomerKeyMD5: 'YOUR_MD5',
@@ -998,7 +998,7 @@ Downloads and saves the object as a file in the local filesystem.
 **Example**
 
 ```js
-minioClient.fGetObject('mybucket', 'photo.jpg', '/tmp/photo.jpg', function (err) {
+obstorClient.fGetObject('mybucket', 'photo.jpg', '/tmp/photo.jpg', function (err) {
   if (err) {
     return console.log(err)
   }
@@ -1010,19 +1010,25 @@ minioClient.fGetObject('mybucket', 'photo.jpg', '/tmp/photo.jpg', function (err)
 To Stream a specific object version into a file.
 
 ```js
-minioClient.fGetObject(bucketName, objNameValue, './download/MyImage.jpg', { versionId: 'my-versionId' }, function (e) {
-  if (e) {
-    return console.log(e)
-  }
-  console.log('success')
-})
+obstorClient.fGetObject(
+  bucketName,
+  objNameValue,
+  './download/MyImage.jpg',
+  { versionId: 'my-versionId' },
+  function (e) {
+    if (e) {
+      return console.log(e)
+    }
+    console.log('success')
+  },
+)
 ```
 
 **Example**
 To Stream a Server Side Encrypted object into a file.
 
 ```js
-minioClient.fGetObject(
+obstorClient.fGetObject(
   bucketName,
   objNameValue,
   './download/MyImage.jpg',
@@ -1079,7 +1085,7 @@ const fileStat = Fs.stat(file, function (err, stats) {
   if (err) {
     return console.log(err)
   }
-  minioClient.putObject('mybucket', '40mbfile', fileStream, stats.size, function (err, objInfo) {
+  obstorClient.putObject('mybucket', '40mbfile', fileStream, stats.size, function (err, objInfo) {
     if (err) {
       return console.log(err) // err should be null
     }
@@ -1104,7 +1110,7 @@ const fileStat = Fs.stat(file, function (err, stats) {
 
 ```js
 const buffer = 'Hello World'
-minioClient.putObject('mybucket', 'hello-file', buffer, function (err, etag) {
+obstorClient.putObject('mybucket', 'hello-file', buffer, function (err, etag) {
   return console.log(err, etag) // err should be null
 })
 ```
@@ -1145,7 +1151,7 @@ const metaData = {
   'X-Amz-Meta-Testing': 1234,
   example: 5678,
 }
-minioClient.fPutObject('mybucket', '40mbfile', file, metaData, function (err, objInfo) {
+obstorClient.fPutObject('mybucket', '40mbfile', file, metaData, function (err, objInfo) {
   if (err) {
     return console.log(err)
   }
@@ -1171,9 +1177,9 @@ Copy a source object into a new object in the specified bucket.
 **Example**
 
 ```js
-const conds = new Minio.CopyConditions()
+const conds = new Obstor.CopyConditions()
 conds.setMatchETag('bd891862ea3e22c93ed53a098218791d')
-await minioClient.copyObject('mybucket', 'newobject', '/mybucket/srcobject', conds)
+await obstorClient.copyObject('mybucket', 'newobject', '/mybucket/srcobject', conds)
 ```
 
 <a name="statObject"></a>
@@ -1204,14 +1210,14 @@ Gets metadata of an object.
 **Example**
 
 ```js
-const stat = await minioClient.statObject('mybucket', 'photo.jpg')
+const stat = await obstorClient.statObject('mybucket', 'photo.jpg')
 console.log(stat)
 ```
 
 **Example stat on a version of an object**
 
 ```js
-const stat = await minioClient.statObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
+const stat = await obstorClient.statObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
 console.log(stat)
 ```
 
@@ -1233,7 +1239,7 @@ Removes an object.
 
 ```js
 ;(async function () {
-  await minioClient.removeObject('mybucket', 'photo.jpg')
+  await obstorClient.removeObject('mybucket', 'photo.jpg')
   console.log('Removed the object')
 })()
 ```
@@ -1244,7 +1250,7 @@ Delete a specific version of an object
 ```js
 ;(async function () {
   try {
-    await minioClient.removeObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
+    await obstorClient.removeObject('mybucket', 'photo.jpg', { versionId: 'my-versionId' })
     console.log('Removed the object')
   } catch (err) {
     console.log('Unable to remove object', err)
@@ -1334,7 +1340,7 @@ Removes a partially uploaded object.
 **Example**
 
 ```js
-await minioClient.removeIncompleteUpload('mybucket', 'photo.jpg')
+await obstorClient.removeIncompleteUpload('mybucket', 'photo.jpg')
 ```
 
 <a name="putObjectRetention"></a>
@@ -1363,7 +1369,7 @@ expirationDate.setDate(expirationDate.getDate() + 1)
 expirationDate.setUTCHours(0, 0, 0, 0) //Should be start of the day.(midnight)
 const versionId = 'e67b4b08-144d-4fc4-ba15-43c3f7f9ba74'
 
-await minioClient.putObjectRetention(bucketName, objectName, {
+await obstorClient.putObjectRetention(bucketName, objectName, {
   Mode: 'GOVERNANCE',
   retainUntilDate: retainUntilDate.toISOString(),
   versionId: versionId,
@@ -1387,14 +1393,14 @@ Get retention config of an object
 **Example 1**
 
 ```js
-const retentionInfo = await minioClient.getObjectRetention('bucketname', 'objectname')
+const retentionInfo = await obstorClient.getObjectRetention('bucketname', 'objectname')
 console.log(retentionInfo)
 ```
 
 **Example 2**
 
 ```js
-const retInfoForVersionId = await minioClient.getObjectRetention('bucketname', 'objectname', {
+const retInfoForVersionId = await obstorClient.getObjectRetention('bucketname', 'objectname', {
   versionId: 'my-versionId',
 })
 console.log(retInfoForVersionId)
@@ -1418,14 +1424,14 @@ Put Tags on an Object
 **Example**
 
 ```js
-await minioClient.setObjectTagging('bucketname', 'object-name', tags)
+await obstorClient.setObjectTagging('bucketname', 'object-name', tags)
 ```
 
 **Example 1**
 Put tags on a version of an object.
 
 ```js
-await minioClient.setObjectTagging('bucketname', 'object-name', tags, { versionId: 'my-version-id' })
+await obstorClient.setObjectTagging('bucketname', 'object-name', tags, { versionId: 'my-version-id' })
 ```
 
 <a name="removeObjectTagging"></a>
@@ -1445,14 +1451,14 @@ Remove Tags on an Object
 **Example**
 
 ```js
-await minioClient.removeObjectTagging('bucketname', 'object-name')
+await obstorClient.removeObjectTagging('bucketname', 'object-name')
 ```
 
 **Example1**
 Remove tags on a version of an object.
 
 ```js
-await minioClient.removeObjectTagging('bucketname', 'object-name', { versionId: 'my-object-version-id' })
+await obstorClient.removeObjectTagging('bucketname', 'object-name', { versionId: 'my-object-version-id' })
 ```
 
 <a name="getObjectTagging"></a>
@@ -1472,14 +1478,14 @@ Get Tags of an Object
 **Example**
 
 ```js
-console.log(await minioClient.getObjectTagging('bucketname', 'object-name'))
+console.log(await obstorClient.getObjectTagging('bucketname', 'object-name'))
 ```
 
 **Example1**
 Get tags on a version of an object.
 
 ```js
-console.log(await minioClient.getObjectTagging('bucketname', 'object-name', { versionId: 'my-object-version-id' }))
+console.log(await obstorClient.getObjectTagging('bucketname', 'object-name', { versionId: 'my-object-version-id' }))
 ```
 
 <a name="getObjectLegalHold"></a>
@@ -1501,7 +1507,7 @@ Get legal hold on an object.
 Get Legal hold of an object.
 
 ```js
-const legalholdStatus = await minioClient.getObjectLegalHold('bucketName', 'objectName')
+const legalholdStatus = await obstorClient.getObjectLegalHold('bucketName', 'objectName')
 ```
 
 **Example 2**
@@ -1509,7 +1515,7 @@ const legalholdStatus = await minioClient.getObjectLegalHold('bucketName', 'obje
 Get Legal hold of an object with versionId.
 
 ```js
-const legalholdStatus = await minioClient.getObjectLegalHold('bucketName', 'objectName', {
+const legalholdStatus = await obstorClient.getObjectLegalHold('bucketName', 'objectName', {
   versionId: 'my-obj-version-uuid',
 })
 ```
@@ -1533,7 +1539,7 @@ Set legal hold on an object.
 Set Legal hold of an object.
 
 ```js
-const legalholdStatus = await minioClient.setObjectLegalHold('bucketName', 'objectName', { Status: 'ON' })
+const legalholdStatus = await obstorClient.setObjectLegalHold('bucketName', 'objectName', { Status: 'ON' })
 ```
 
 **Example 2**
@@ -1541,7 +1547,7 @@ const legalholdStatus = await minioClient.setObjectLegalHold('bucketName', 'obje
 Set Legal hold of an object with versionId.
 
 ```js
-const legalholdStatus = await minioClient.setObjectLegalHold('bucketName', 'objectName', {
+const legalholdStatus = await obstorClient.setObjectLegalHold('bucketName', 'objectName', {
   Status: 'ON',
   versionId: 'my-obj-version-uuid',
 })
@@ -1555,44 +1561,44 @@ Compose an object from parts
 
 **Parameters**
 
-| Param              | Type       | Description                                                                                                                                                                          |
-| ------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `destObjConfig`    | _object_   | Destination Object configuration of the type [CopyDestinationOptions](https://github.com/minio/minio-js/blob/master/src/helpers.js)                                                  |
-| `sourceObjectList` | _object[]_ | Array of object(parts) source to compose into an object. Each part configuration should be of type [CopySourceOptions](https://github.com/minio/minio-js/blob/master/src/helpers.js) |
+| Param              | Type       | Description                                                                                                                                                                            |
+| ------------------ | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `destObjConfig`    | _object_   | Destination Object configuration of the type [CopyDestinationOptions](https://github.com/obstor/obstor-js/blob/master/src/helpers.js)                                                  |
+| `sourceObjectList` | _object[]_ | Array of object(parts) source to compose into an object. Each part configuration should be of type [CopySourceOptions](https://github.com/obstor/obstor-js/blob/master/src/helpers.js) |
 
 **Example 1**
 
 Compose an Object from its parts .
 
 ```js
-import * as minio from 'minio'
+import * as obstor from 'obstor'
 
 const sourceList = [
-  new minio.CopySourceOptions({
+  new obstor.CopySourceOptions({
     Bucket: 'source-bucket',
     Object: 'parta',
   }),
-  new minio.CopySourceOptions({
+  new obstor.CopySourceOptions({
     Bucket: 'source-bucket',
     Object: 'partb',
   }),
-  new minio.CopySourceOptions({
+  new obstor.CopySourceOptions({
     Bucket: 'source-bucket',
     Object: 'partc',
   }),
-  new minio.CopySourceOptions({
+  new obstor.CopySourceOptions({
     Bucket: 'source-bucket',
     Object: 'partd',
   }),
 ]
 
-const destOption = new minio.CopyDestinationOptions({
+const destOption = new obstor.CopyDestinationOptions({
   Bucket: 'dest-bucket',
   Object: '100MB.zip',
 })
 
 //using Promise style.
-await minioClient.composeObject(destOption, sourceList)
+await obstorClient.composeObject(destOption, sourceList)
 ```
 
 <a name="selectObjectContent"></a>
@@ -1624,7 +1630,7 @@ const selectOpts = {
   requestProgress: { Enabled: true },
 }
 
-const res = await minioClient.selectObjectContent('bucketName', 'objectName', selectOpts)
+const res = await obstorClient.selectObjectContent('bucketName', 'objectName', selectOpts)
 console.log(res)
 ```
 
@@ -1653,7 +1659,7 @@ Generates a presigned URL for the provided HTTP method, 'httpMethod'. Browsers/M
 ```js
 // presigned url for 'getObject' method.
 // expires in a day.
-const presignedUrl = await minioClient.presignedUrl('GET', 'mybucket', 'hello.txt', 24 * 60 * 60)
+const presignedUrl = await obstorClient.presignedUrl('GET', 'mybucket', 'hello.txt', 24 * 60 * 60)
 console.log(presignedUrl)
 ```
 
@@ -1663,14 +1669,14 @@ console.log(presignedUrl)
 // presigned url for 'listObject' method.
 // Lists objects in 'myBucket' with prefix 'data'.
 // Lists max 1000 of them.
-await minioClient.presignedUrl('GET', 'mybucket', '', 1000, { prefix: 'data', 'max-keys': 1000 })
+await obstorClient.presignedUrl('GET', 'mybucket', '', 1000, { prefix: 'data', 'max-keys': 1000 })
 ```
 
 **Example 3**
 
 ```js
 // Get Object with versionid
-await minioClient.presignedUrl('GET', 'mybucket', '', 1000, { versionId: '10fa9946-3f64-4137-a58f-888065c0732e' })
+await obstorClient.presignedUrl('GET', 'mybucket', '', 1000, { versionId: '10fa9946-3f64-4137-a58f-888065c0732e' })
 ```
 
 <a name="presignedGetObject"></a>
@@ -1693,7 +1699,7 @@ Generates a presigned URL for HTTP GET operations. Browsers/Mobile clients may p
 
 ```js
 // expires in a day.
-const presignedUrl = await minioClient.presignedGetObject('mybucket', 'hello.txt', 24 * 60 * 60)
+const presignedUrl = await obstorClient.presignedGetObject('mybucket', 'hello.txt', 24 * 60 * 60)
 console.log(presignedUrl)
 ```
 
@@ -1715,7 +1721,7 @@ Generates a presigned URL for HTTP PUT operations. Browsers/Mobile clients may p
 
 ```js
 // expires in a day.
-const presignedUrl = await minioClient.presignedPutObject('mybucket', 'hello.txt', 24 * 60 * 60)
+const presignedUrl = await obstorClient.presignedPutObject('mybucket', 'hello.txt', 24 * 60 * 60)
 console.log(presignedUrl)
 ```
 
@@ -1727,14 +1733,14 @@ Allows setting policy conditions to a presigned URL for POST operations. Policie
 
 **Parameters**
 
-| Param    | Type     | Description                                          |
-| -------- | -------- | ---------------------------------------------------- |
-| `policy` | _object_ | Policy object created by minioClient.newPostPolicy() |
+| Param    | Type     | Description                                           |
+| -------- | -------- | ----------------------------------------------------- |
+| `policy` | _object_ | Policy object created by obstorClient.newPostPolicy() |
 
 Create policy:
 
 ```js
-const policy = minioClient.newPostPolicy()
+const policy = obstorClient.newPostPolicy()
 ```
 
 Apply upload policy restrictions:
@@ -1776,7 +1782,7 @@ policy.setUserMetaData({
 POST your content from the browser using `superagent`:
 
 ```js
-const { postURL, formData } = await minioClient.presignedPostPolicy(policy)
+const { postURL, formData } = await obstorClient.presignedPostPolicy(policy)
 const req = superagent.post(postURL)
 _.each(formData, function (value, key) {
   req.field(key, value)
@@ -1813,7 +1819,7 @@ Fetch the notification configuration stored in the S3 provider and that belongs 
 **Example**
 
 ```js
-minioClient.getBucketNotification('mybucket', function (err, bucketNotificationConfig) {
+obstorClient.getBucketNotification('mybucket', function (err, bucketNotificationConfig) {
   if (err) return console.log(err)
   console.log(bucketNotificationConfig)
 })
@@ -1837,20 +1843,20 @@ Upload a user-created notification configuration and associate it to the specifi
 
 ```js
 // Create a new notification object
-const bucketNotification = new Minio.NotificationConfig()
+const bucketNotification = new Obstor.NotificationConfig()
 
 // Setup a new Queue configuration
-const arn = Minio.buildARN('aws', 'sqs', 'us-west-2', '1', 'webhook')
-const queue = new Minio.QueueConfig(arn)
+const arn = Obstor.buildARN('aws', 'sqs', 'us-west-2', '1', 'webhook')
+const queue = new Obstor.QueueConfig(arn)
 queue.addFilterSuffix('.jpg')
 queue.addFilterPrefix('myphotos/')
-queue.addEvent(Minio.ObjectReducedRedundancyLostObject)
-queue.addEvent(Minio.ObjectCreatedAll)
+queue.addEvent(Obstor.ObjectReducedRedundancyLostObject)
+queue.addEvent(Obstor.ObjectCreatedAll)
 
 // Add the queue to the overall notification object
 bucketNotification.add(queue)
 
-minioClient.setBucketNotification('mybucket', bucketNotification, function (err) {
+obstorClient.setBucketNotification('mybucket', bucketNotification, function (err) {
   if (err) return console.log(err)
   console.log('Success')
 })
@@ -1870,7 +1876,7 @@ Remove the bucket notification configuration associated to the specified bucket.
 | `callback(err)` | _function_ | Callback function is called with non `null` err value in case of error. If no callback is passed, a `Promise` is returned. |
 
 ```js
-minioClient.removeAllBucketNotification('my-bucketname', function (e) {
+obstorClient.removeAllBucketNotification('my-bucketname', function (e) {
   if (e) {
     return console.log(e)
   }
@@ -1884,7 +1890,7 @@ minioClient.removeAllBucketNotification('my-bucketname', function (e) {
 
 Listen for notifications on a bucket. Additionally one can provider
 filters for prefix, suffix and events. There is no prior set bucket notification
-needed to use this API. This is an MinIO extension API where unique identifiers
+needed to use this API. This is an Obstor extension API where unique identifiers
 are registered and unregistered by the server automatically based on incoming requests.
 
 Returns an `EventEmitter`, which will emit a `notification` event carrying the record.
@@ -1900,10 +1906,10 @@ To stop listening, call `.stop()` on the returned `EventEmitter`.
 | `suffix`     | _string_ | Object key suffix to filter notifications for.  |
 | `events`     | _Array_  | Enables notifications for specific event types. |
 
-See [here](https://github.com/minio/minio-js/blob/master/examples/minio/listen-bucket-notification.js) for a full example.
+See [here](https://github.com/obstor/obstor-js/blob/master/examples/obstor/listen-bucket-notification.js) for a full example.
 
 ```js
-const listener = minioClient.listenBucketNotification('my-bucketname', 'photos/', '.jpg', ['s3:ObjectCreated:*'])
+const listener = obstorClient.listenBucketNotification('my-bucketname', 'photos/', '.jpg', ['s3:ObjectCreated:*'])
 listener.on('notification', function (record) {
   // For example: 's3:ObjectCreated:Put event occurred (2016-08-23T18:26:07.214Z)'
   console.log('%s event occurred (%s)', record.eventName, record.eventTime)
@@ -1927,7 +1933,7 @@ as well.
 
 ```js
 // Retrieve bucket policy of 'my-bucketname'
-const policy = await minioClient.getBucketPolicy('my-bucketname')
+const policy = await obstorClient.getBucketPolicy('my-bucketname')
 
 console.log(`Bucket policy file: ${policy}`)
 ```
@@ -1947,7 +1953,7 @@ Set the bucket policy on the specified bucket. [bucketPolicy](https://docs.aws.a
 
 ```js
 // Set the bucket policy of `my-bucketname`
-await minioClient.setBucketPolicy('my-bucketname', JSON.stringify(policy))
+await obstorClient.setBucketPolicy('my-bucketname', JSON.stringify(policy))
 ```
 
 ## 6. Custom Settings
@@ -1973,9 +1979,9 @@ Set the HTTP/HTTPS request options. Supported options are `agent` ([http.Agent()
 
 ```js
 // Do not reject self signed certificates.
-minioClient.setRequestOptions({ rejectUnauthorized: false })
+obstorClient.setRequestOptions({ rejectUnauthorized: false })
 ```
 
 ## 7. Explore Further
 
-- [Build your own Shopping App Example](https://github.com/minio/minio-js-store-app)
+- [Build your own Shopping App Example](https://github.com/obstor/obstor-js-store-app)

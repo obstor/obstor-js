@@ -17,9 +17,9 @@
 // Note: YOUR-ACCESSKEYID, YOUR-SECRETACCESSKEY and my-bucketname are
 // dummy values, please replace them with original values.
 
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
@@ -56,10 +56,10 @@ await s3Client.setBucketEncryption('test-bucket', encryptionConfig)
  * KMS ID based SSE Encryption
  * Sample Configuration:
  *
- * export MINIO_KMS_KES_ENDPOINT=https://play.min.io:7373;
- * export MINIO_KMS_KES_KEY_FILE=root.key;
- * export MINIO_KMS_KES_CERT_FILE=root.cert;
- * export MINIO_KMS_KES_KEY_NAME=my-minio-key; //KMS Key ID
+ * export OBSTOR_KMS_KES_ENDPOINT=https://demo.obstor.net:7373;
+ * export OBSTOR_KMS_KES_KEY_FILE=root.key;
+ * export OBSTOR_KMS_KES_CERT_FILE=root.cert;
+ * export OBSTOR_KMS_KES_KEY_NAME=my-obstor-key; //KMS Key ID
  *
  * Start the server.
  *
@@ -70,7 +70,7 @@ await s3Client.setBucketEncryption('test-bucket', encryptionConfig)
  *    metaData: {
  *      'content-type': 'application/octet-stream',
  *      'x-amz-server-side-encryption': 'aws:kms',
- *      'x-amz-server-side-encryption-aws-kms-key-id': 'my-minio-key', // the key will be printed here.
+ *      'x-amz-server-side-encryption-aws-kms-key-id': 'my-obstor-key', // the key will be printed here.
  *      example: '5678',
  *      testing: '1234'
  *    },
@@ -84,7 +84,7 @@ const kmsIdEncryptionConfig = {
   Rule: [
     {
       ApplyServerSideEncryptionByDefault: {
-        KMSMasterKeyID: 'my-minio-key', //as per env value
+        KMSMasterKeyID: 'my-obstor-key', //as per env value
         SSEAlgorithm: 'aws:kms', // this is important
       },
     },

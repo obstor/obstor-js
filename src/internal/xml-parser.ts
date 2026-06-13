@@ -88,8 +88,8 @@ export async function parseResponseError(response: http.IncomingMessage): Promis
     code = 'SlowDown'
     message = 'Please reduce your request rate.'
   } else {
-    const hErrCode = response.headers['x-minio-error-code'] as string
-    const hErrDesc = response.headers['x-minio-error-desc'] as string
+    const hErrCode = response.headers['x-obstor-error-code'] as string
+    const hErrDesc = response.headers['x-obstor-error-desc'] as string
 
     if (hErrCode && hErrDesc) {
       code = hErrCode

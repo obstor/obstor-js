@@ -17,9 +17,9 @@
 // Note: YOUR-ACCESSKEYID, YOUR-SECRETACCESSKEY and my-bucketname are
 // dummy values, please replace them with original values.
 
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 'localhost',
   port: 9000,
   useSSL: false,
@@ -27,13 +27,13 @@ const s3Client = new Minio.Client({
   secretKey: 'YOUR-SECRETACCESSKEY',
 })
 
-const config = new Minio.NotificationConfig()
-const arn = Minio.buildARN('minio', 'sqs', '', '1', 'webhook')
-const queue = new Minio.QueueConfig(arn)
+const config = new Obstor.NotificationConfig()
+const arn = Obstor.buildARN('obstor', 'sqs', '', '1', 'webhook')
+const queue = new Obstor.QueueConfig(arn)
 
 queue.addFilterSuffix('.jpg')
 queue.addFilterPrefix('myphotos/')
-queue.addEvent(Minio.ObjectCreatedAll)
+queue.addEvent(Obstor.ObjectCreatedAll)
 
 config.add(queue)
 

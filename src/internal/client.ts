@@ -10,7 +10,7 @@ import * as async from 'async'
 import BlockStream2 from 'block-stream2'
 import { isBrowser } from 'browser-or-node'
 import _ from 'lodash'
-import * as qs from 'query-string'
+import qs from 'query-string'
 import xml2js from 'xml2js'
 
 import { CredentialProvider } from '../CredentialProvider.ts'
@@ -124,6 +124,7 @@ import type {
   UploadPartConfig,
 } from './type.ts'
 import type { ListMultipartResult, UploadedPart } from './xml-parser.ts'
+import * as xmlParsers from './xml-parser.ts'
 import {
   parseBucketNotification,
   parseCompleteMultipart,
@@ -134,12 +135,11 @@ import {
   parseSelectObjectContentResponse,
   uploadPartParser,
 } from './xml-parser.ts'
-import * as xmlParsers from './xml-parser.ts'
 
 const xml = new xml2js.Builder({ renderOpts: { pretty: false }, headless: true })
 
 // will be replaced by bundler.
-const Package = { version: process.env.MINIO_JS_PACKAGE_VERSION || 'development' }
+const Package = { version: process.env.OBSTOR_JS_PACKAGE_VERSION || 'development' }
 
 const requestOptionProperties = [
   'agent',
@@ -330,10 +330,10 @@ export class TypedClient {
     // User Agent should always following the below style.
     // Please open an issue to discuss any new changes here.
     //
-    //       MinIO (OS; ARCH) LIB/VER APP/VER
+    //       Obstor (OS; ARCH) LIB/VER APP/VER
     //
     const libraryComments = `(${process.platform}; ${process.arch})`
-    const libraryAgent = `MinIO ${libraryComments} minio-js/${Package.version}`
+    const libraryAgent = `Obstor ${libraryComments} obstor-js/${Package.version}`
     // User agent block ends.
 
     this.transport = transport
@@ -400,7 +400,7 @@ export class TypedClient {
     }
   }
   /**
-   * Minio extensions that aren't necessary present for Amazon S3 compatible storage servers
+   * Obstor extensions that aren't necessary present for Amazon S3 compatible storage servers
    */
   get extensions() {
     return this.clientExtensions
@@ -444,7 +444,7 @@ export class TypedClient {
   /**
    *   Set application specific information.
    *   Generates User-Agent in the following style.
-   *   MinIO (OS; ARCH) LIB/VER APP/VER
+   *   Obstor (OS; ARCH) LIB/VER APP/VER
    */
   setAppInfo(appName: string, appVersion: string) {
     if (!isString(appName)) {
@@ -557,7 +557,7 @@ export class TypedClient {
       }
     }
 
-    // Use any request option specified in minioClient.setRequestOptions()
+    // Use any request option specified in obstorClient.setRequestOptions()
     reqOptions = Object.assign({}, this.reqOptions, reqOptions)
 
     return {
@@ -752,7 +752,6 @@ export class TypedClient {
 
     await this.checkAndRefreshCreds()
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     region = region || (await this.getBucketRegionAsync(options.bucketName!))
 
     const reqOptions = this.getRequestOptions({ ...options, region })
@@ -787,7 +786,7 @@ export class TypedClient {
       // But we will do cache invalidation for all errors so that,
       // in future, if AWS S3 decides to send a different status code or
       // XML error code we will still work fine.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       delete this.regionMap[options.bucketName!]
 
       const err = await xmlParsers.parseResponseError(response)
@@ -855,7 +854,7 @@ export class TypedClient {
           return DEFAULT_REGION
         }
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
       // @ts-ignore
       if (!(e.name === 'AuthorizationHeaderMalformed')) {
         throw e
@@ -893,7 +892,6 @@ export class TypedClient {
     if (returnResponse) {
       prom = this.makeRequestAsync(options, payload, expectedCodes, region)
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error compatible for old behaviour
       prom = this.makeRequestAsyncOmit(options, payload, expectedCodes, region)
     }
@@ -901,7 +899,6 @@ export class TypedClient {
     prom.then(
       (result) => cb(null, result),
       (err) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         cb(err)
       },
@@ -934,7 +931,7 @@ export class TypedClient {
 
     executor().then(
       (result) => cb(null, result),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
       // @ts-ignore
       (err) => cb(err),
     )
@@ -946,7 +943,7 @@ export class TypedClient {
   getBucketRegion(bucketName: string, cb: (err: unknown, region: string) => void) {
     return this.getBucketRegionAsync(bucketName).then(
       (result) => cb(null, result),
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
       // @ts-ignore
       (err) => cb(err),
     )
@@ -1147,7 +1144,7 @@ export class TypedClient {
 
   /**
    * download object content to a file.
-   * This method will create a temp file named `${filename}.${base64(etag)}.part.minio` when downloading.
+   * This method will create a temp file named `${filename}.${base64(etag)}.part.obstor` when downloading.
    *
    * @param bucketName - name of the bucket
    * @param objectName - name of the object
@@ -1170,7 +1167,7 @@ export class TypedClient {
       let partFileStream: stream.Writable
       const objStat = await this.statObject(bucketName, objectName, getOpts)
       const encodedEtag = Buffer.from(objStat.etag).toString('base64')
-      const partFile = `${filePath}.${encodedEtag}.part.minio`
+      const partFile = `${filePath}.${encodedEtag}.part.obstor`
 
       await fsp.mkdir(path.dirname(filePath), { recursive: true })
 
@@ -1255,7 +1252,7 @@ export class TypedClient {
       headers['X-Amz-Bypass-Governance-Retention'] = true
     }
     if (removeOpts?.forceDelete) {
-      headers['x-minio-force-delete'] = true
+      headers['x-obstor-force-delete'] = true
     }
 
     const queryParams: Record<string, string> = {}
@@ -1307,18 +1304,16 @@ export class TypedClient {
       }
       this.listIncompleteUploadsQuery(bucket, prefix, keyMarker, uploadIdMarker, delimiter).then(
         (result) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           result.prefixes.forEach((prefix) => uploads.push(prefix))
           async.eachSeries(
             result.uploads,
             (upload, cb) => {
               // for each incomplete upload add the sizes of its uploaded parts
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
               // @ts-ignore
               this.listParts(bucket, upload.key, upload.uploadId).then(
                 (parts: Part[]) => {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   upload.size = parts.reduce((acc, item) => acc + item.size, 0)
                   uploads.push(upload)
@@ -1339,7 +1334,6 @@ export class TypedClient {
                 ended = true
               }
 
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               readStream._read()
             },
@@ -1530,7 +1524,6 @@ export class TypedClient {
     }
 
     return {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       etag: result.etag as string,
       versionId: getVersionId(res.headers as ResponseHeader),
@@ -1793,7 +1786,6 @@ export class TypedClient {
 
     const chunkier = new BlockStream2({ size: partSize, zeroPadding: false })
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, o] = await Promise.all([
       new Promise((resolve, reject) => {
         body.pipe(chunkier).on('error', reject)
@@ -2476,7 +2468,7 @@ export class TypedClient {
     let encryptionObj = encryptionConfig
     if (_.isEmpty(encryptionConfig)) {
       encryptionObj = {
-        // Default MinIO Server Supported Rule
+        // Default Obstor Server Supported Rule
         Rule: [
           {
             ApplyServerSideEncryptionByDefault: {

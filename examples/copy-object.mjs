@@ -18,15 +18,15 @@
 // my-src-bucketname and my-src-objectname are dummy values, please replace
 // them with original values.
 
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
 })
 
-const conds = new Minio.CopyConditions()
+const conds = new Obstor.CopyConditions()
 conds.setMatchETag('bd891862ea3e22c93ed53a098218791d')
 
 await s3Client.copyObject('my-target-bucketname', 'my-target-objectname', '/my-src-bucketname/my-src-objectname', conds)

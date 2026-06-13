@@ -16,15 +16,15 @@
 
 // Note: YOUR-ACCESSKEYID, YOUR-SECRETACCESSKEY, my-bucketname, my-objectname  are
 // dummy values, please replace them with original values.
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
 })
 
-// Note: It is a no-op in MinIO
+// Note: It is a no-op in Obstor
 // Can be used/tested with AWS S3.
 try {
   await s3Client.removeIncompleteUpload('my-bucketname', 'my-objectname')

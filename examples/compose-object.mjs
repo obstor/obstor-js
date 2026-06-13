@@ -17,9 +17,9 @@
 // Note: YOUR-ACCESSKEYID, YOUR-SECRETACCESSKEY, my-bucketname and my-objectname
 // are dummy values, please replace them with original values.
 
-import * as Minio from 'minio'
+import * as Obstor from 'obstor'
 
-const s3Client = new Minio.Client({
+const s3Client = new Obstor.Client({
   endPoint: 's3.amazonaws.com',
   accessKey: 'YOUR-ACCESSKEYID',
   secretKey: 'YOUR-SECRETACCESSKEY',
@@ -29,34 +29,34 @@ const bucketName = 'my-bucketname'
 const objectName = 'my-objectname'
 
 const sourceList = [
-  new Minio.CopySourceOptions({
+  new Obstor.CopySourceOptions({
     Bucket: bucketName,
     Object: 'parta',
     // other options if any.
   }),
-  new Minio.CopySourceOptions({
+  new Obstor.CopySourceOptions({
     Bucket: bucketName,
     Object: 'partb',
     // other options if any.
     //    VersionID:""
   }),
-  new Minio.CopySourceOptions({
+  new Obstor.CopySourceOptions({
     Bucket: bucketName,
     Object: 'partc',
   }),
-  new Minio.CopySourceOptions({
+  new Obstor.CopySourceOptions({
     Bucket: bucketName,
     Object: 'partd',
   }),
 ]
 
-const destOption = new Minio.CopyDestinationOptions({
+const destOption = new Obstor.CopyDestinationOptions({
   Bucket: bucketName,
   Object: objectName,
   /** Other possible options */
   /* Encryption:{
         type:Helpers.ENCRYPTION_TYPES.KMS,
-        KMSMasterKeyID:'my-minio-key', //as per env value
+        KMSMasterKeyID:'my-obstor-key', //as per env value
         SSEAlgorithm:"aws:kms" // this is important
       }, */
   // UserTags:"tagKeyOverride=tagValueOverride&tgK2Ov=tgK2Ov",//querystring format.

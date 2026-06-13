@@ -35,7 +35,7 @@ function options(module) {
       'babel-plugin-transform-replace-expressions',
       {
         replace: {
-          'process.env.MINIO_JS_PACKAGE_VERSION': JSON.stringify(pkg.version),
+          'process.env.OBSTOR_JS_PACKAGE_VERSION': JSON.stringify(pkg.version),
         },
       },
     ],

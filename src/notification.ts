@@ -216,7 +216,7 @@ export class NotificationPoller extends EventEmitter<{
 
     this.client.makeRequestAsync({ method, bucketName: this.bucketName, query }, '', [200], region).then(
       (response) => {
-        const asm = jsonLineParser.make()
+        const asm = jsonLineParser.asStream()
 
         pipesetup(response, asm)
           .on('data', (data) => {

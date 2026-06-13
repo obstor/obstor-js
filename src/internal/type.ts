@@ -448,7 +448,7 @@ export type ExcludedPrefix = {
 }
 export type BucketVersioningConfiguration = {
   Status: VersioningEnabled | VersioningSuspended
-  /* Below are minio only extensions */
+  /* Below are obstor only extensions */
   MFADelete?: string
   ExcludedPrefixes?: ExcludedPrefix[]
   ExcludeFolders?: boolean
