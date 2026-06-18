@@ -3453,9 +3453,8 @@ describe('functional tests', function () {
 
   describe('Bucket Replication API Tests', () => {
     // TODO - As of now, there is no api to get arn programmatically to setup replication through APIs and verify.
-    // Please refer to obstor server documentation and mc cli.
+    // Configure the replication rule and obtain the ARN
     // https://obstor.net/docs/linux/administration/bucket-replication.html
-    // https://obstor.net/docs/linux/reference/obstor-mc/mc-replicate-add.html
   })
 
   describe('Object Legal hold API Tests', () => {

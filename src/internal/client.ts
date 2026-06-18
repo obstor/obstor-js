@@ -846,7 +846,7 @@ export class TypedClient {
       const res = await this.makeRequestAsync({ method, bucketName, query, pathStyle }, '', [200], DEFAULT_REGION)
       return extractRegionAsync(res)
     } catch (e) {
-      // make alignment with mc cli
+      // On AccessDenied, default region fallback.
       if (e instanceof errors.S3Error) {
         const errCode = e.code
         const errRegion = e.region

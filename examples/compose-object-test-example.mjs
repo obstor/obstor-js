@@ -33,7 +33,7 @@ const composedObjName = 'my-objectname'
 
 const oneMB = 1024 * 1024
 
-// Create a bucket prior to running: mc mb local/source-bucket
+// Create a bucket prior to running: rclone mkdir local:my-bucketname
 const sampleRunComposeObject = async () => {
   const tmpDir = os.tmpdir()
 

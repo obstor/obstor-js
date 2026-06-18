@@ -504,9 +504,10 @@ Set replication config on a Bucket
 **Example**
 
 ```js
-const arnFromMcCli = 'arn:obstor:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
+// ARN obtained from the replication rule created
+const replicationArn = 'arn:obstor:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
 const replicationConfig = {
-  role: arnFromMcCli,
+  role: replicationArn,
   rules: [
     {
       ID: 'cisea130mbms6splbmg0',

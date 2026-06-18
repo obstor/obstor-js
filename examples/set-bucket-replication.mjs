@@ -23,9 +23,10 @@ const s3Client = new Obstor.Client({
   secretKey: 'YOUR-SECRETACCESSKEY',
 })
 
-const arnFromMcCli = 'arn:obstor:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
+// ARN obtained from the replication rule created
+const replicationArn = 'arn:obstor:replication::b22d653b-e4fb-4c5d-8140-7694c8e72ed4:dest-bucket'
 const replicationConfig = {
-  role: arnFromMcCli,
+  role: replicationArn,
   rules: [
     {
       ID: 'cisea130mbms6splbmg0',
@@ -66,23 +67,16 @@ try {
  * Steps to configure bucket replication
  * Create Site 1
  * CI=true  OBSTOR_ROOT_USER=obstor OBSTOR_ROOT_PASSWORD=obstor123 obstor server /tmp/sem{1...4}  --address ":22000" --console-address ":9025"
- * mc alias set local22 http://localhost:22000 obstor obstor123
+ * rclone config create local22 s3 provider=Other endpoint=http://localhost:22000 access_key_id=obstor secret_access_key=obstor123
+ *
  * Create Site 2
  * CI=true  OBSTOR_ROOT_USER=obstor OBSTOR_ROOT_PASSWORD=obstor123 obstor server /tmp/sem-1{1...4}  --address ":23000" --console-address ":9035"
- * mc alias set local23 http://localhost:23000 obstor obstor123
+ * rclone config create local23 s3 provider=Other endpoint=http://localhost:23000 access_key_id=obstor secret_access_key=obstor123
  *
- * mc mb local22/source-bucket
- * mc mb local23/dest-bucket
- * mc version enable local22/source-bucket
- * mc version enable local23/dest-bucket
+ * Create the buckets
+ * rclone mkdir local22:source-bucket
+ * rclone mkdir local23:dest-bucket
  *
- *
- * ➜ mc replicate add local22/source-bucket --remote-bucket http://obstor:obstor123@localhost:23000/dest-bucket --priority 1
- *
- * mc replicate ls local22/source-bucket  --json| jq .rule.Destination.Bucket  # to obtain the arn
- *
- * Result
- * ➜ mc replicate ls local22/source-bucket --json
- *
- * mc replicate add local22/source-bucket --remote-bucket http://obstor:obstor123@localhost:23000/dest-bucket --replicate "existing-objects,delete,delete-marker" --priority 1 --tags "key1=value1&key2=value2" --bandwidth "2G" --sync
+ * Enable versioning on both buckets
+ * Versioning is required on the source and destination before replication can be configured.
  */
