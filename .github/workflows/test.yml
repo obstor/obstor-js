@@ -57,7 +57,7 @@ jobs:
         env:
           CI: true
           OBSTOR_CI_CD: true
-          MINT_MODE: full
+          TESTS_MODE: full
           ACCESS_KEY: obstor
           SECRET_KEY: obstor123
           ENABLE_HTTPS: 0

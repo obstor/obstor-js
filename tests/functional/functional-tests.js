@@ -86,8 +86,8 @@ describe('functional tests', function () {
   clientConfigParams.partSize = 64 * 1024 * 1024
 
   // dataDir is falsy if we need to generate data on the fly. Otherwise, it will be
-  // a directory with files to read from, i.e. /mint/data.
-  var dataDir = process.env['MINT_DATA_DIR']
+  // a directory with files to read from, i.e. /tests/data.
+  var dataDir = process.env['TESTS_DATA_DIR']
 
   var client = new obstor.Client(clientConfigParams)
   var usEastConfig = clientConfigParams
